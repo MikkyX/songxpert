@@ -62,21 +62,42 @@ class GameController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        // First we need to filter out any track which doesn't have a preview...
-        $tracks = collect($this->spotifyChart->items)->filter(function($track) {
-            return (!empty($track->track->preview_url));
+        // Get our session of recently used tracks
+        $recents = (session('recents') ?: collect());
+
+        // Run some filters over the track list
+        $tracks = collect($this->spotifyChart->items)->reject(function($track) {
+            // Reject the track if it doesn't have a preview URL
+            return empty($track->track->preview_url);
+        })->reject(function ($track) use ($recents) {
+            // Reject the track if it appears in the recents list
+            return $recents->contains($track->track->id);
         })->shuffle()->take(3);
 
         // The first track is the correct answer
         $correct_track = $tracks->first();
+        $correct_answer = $correct_track->track->id;
+
+        // Add this to the "recently used" session
+        $recents = $recents->push($correct_answer);
+
+        // Make sure we only store the last 20
+        if ($recents->count() >= 20) {
+            $recents = $recents->slice(1,20)->values();
+        }
+
+        // Store it back in the session
+        session([
+            'recents' => $recents
+        ]);
 
         // Shuffle the tracks for the form
         $answers = $tracks->shuffle();
 
         // The first answer is the correct one
-        session(['answer' => $correct_track->track->id]);
+        session(['answer' => $correct_answer]);
 
         // Show the form
         return view('form',[
