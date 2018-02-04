@@ -28,7 +28,7 @@ class GameController extends Controller
                 Cache::put(
                     'accessToken',
                     $this->spotifyClient->getAccessToken(),
-                    $this->spotifyClient->getTokenExpiration() / 60 // Expiration is returned in seconds?
+                    $this->spotifyClient->getTokenExpiration() / 30 // Expiration is returned in seconds?
                 );
             }
         }
