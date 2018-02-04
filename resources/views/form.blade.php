@@ -52,7 +52,7 @@
                                 <div class="hero-body">
                                     <div class="container">
                                         <h1 class="title"><i class="far fa-check-circle"></i> Right!</h1>
-                                        <h2 class="subtitle">You scored <strong>{{ $score }}</strong> points for this one</h2>
+                                        <h2 class="subtitle">You scored <strong>{{ $last_score }}</strong> points for this one</h2>
                                     </div>
                                 </div>
                             </section>
@@ -71,7 +71,7 @@
                         <form action="/guess" method="post">
                             {!! csrf_field() !!}
                             <input id="time" name="time" type="hidden" value="" />
-                            <audio id="song">
+                            <audio autoplay id="song">
                                 <source src="{!! $track->preview_url !!}" type="audio/mp3">
                             </audio>
 
@@ -85,6 +85,17 @@
                                 ><i class="far fa-music"></i>&nbsp;&nbsp;{{ str_limit($answer->track->name,30) }} - {{ str_limit(collect($answer->track->artists)->implode('name',', '),30) }}&nbsp;&nbsp;<i class="far fa-music"></i></button>
                             @endforeach
                         </form>
+
+                        <div class="columns">
+                            <div class="column">
+                                Right:<br />
+                                <span class="is-size-1">{{ session('correct') }}</span> / {{ session('heard') }}</small>
+                            </div>
+                            <div class="column">
+                                Score:<br />
+                                <span class="is-size-1">{{ session('score') }}</span>
+                            </div>
+                        </div>
 
                         <p>Created for <a href="https://larahack.com" target="_blank">Larahack 2018</a> by <a href="https://twitter.com/mikkyx">mikkyx</a></p>
                     </div>
@@ -104,11 +115,9 @@
         },10);
 
         // If the song ends without an answer being given, reload the page
-        /*
         document.getElementById('song').onended = function() {
             location.reload();
         };
-        */
     </script>
 </body>
 </html>

@@ -75,7 +75,7 @@ class GameController extends Controller
         // Show the form
         return view('form',[
             'answers' => $answers,
-            'score' => session('score') ?: '',
+            'last_score' => session('last_score') ?: '',
             'track' => $correct_track->track,
             'update' => session('update') ?: '',
         ]);
@@ -83,21 +83,37 @@ class GameController extends Controller
 
     /**
      * Handle a guess
+     *
+     * @param $request
+     * @return redirect
      */
     public function guess(Request $request)
     {
+        // Load the old session
+        $correct = session('correct') ?: 0;
+        $score = session('score') ?: 0;
+
         // Check to see if they got this one right
         if ($request->answer == session('answer')) {
             // If they did, they score up to 5 points, depending on answer speed
+            $correct++;
+            $last_score = ceil((30 - $request->time) / 6);
+            $score += $last_score;
             $update = 'Right';
-            $score = ceil((30 - $request->time) / 6);
         } else {
+            $last_score = 0;
             $update = 'Wrong';
-            $score = 0;
         }
 
-        return redirect('/')->with([
+        // Store the updated stats in a session
+        session([
+            'correct' => $correct,
+            'heard' => session('heard') ? session('heard') + 1 : 1,
             'score' => $score,
+        ]);
+
+        return redirect('/')->with([
+            'last_score' => $last_score,
             'update' => $update,
         ]);
     }
