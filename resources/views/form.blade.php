@@ -12,6 +12,7 @@
     <script src="/js/fa-regular.min.js"></script>
     <style>
         html, body {
+            background: #7da8c3;
             height: 100%;
         }
 
@@ -38,51 +39,56 @@
         <div class="container">
             <div class="columns">
                 <div class="column is-half-desktop is-offset-one-quarter-desktop has-text-centered">
-                    <h1 class="title">
-                        <i class="fab fa-2x fa-spotify"></i><br />
-                        Name That Tune!
-                    </h1>
+                    <div class="box">
+                        <h1 class="title">
+                            <i class="fab fa-2x fa-spotify"></i><br />
+                            Name That Tune!
+                        </h1>
 
-                    @if ($update == 'Right')
-                        <section class="hero is-success has-text-left">
-                            <div class="hero-body">
-                                <div class="container">
-                                    <h1 class="title"><i class="far fa-check-circle"></i> Right!</h1>
-                                    <h2 class="subtitle">You scored <strong>{{ $score }}</strong> points for this one</h2>
+                        <progress class="progress is-info" id="playtime" max="30" value="0"></progress>
+
+                        @if ($update == 'Right')
+                            <section class="hero is-success has-text-left">
+                                <div class="hero-body">
+                                    <div class="container">
+                                        <h1 class="title"><i class="far fa-check-circle"></i> Right!</h1>
+                                        <h2 class="subtitle">You scored <strong>{{ $score }}</strong> points for this one</h2>
+                                    </div>
                                 </div>
-                            </div>
-                        </section>
-                    @endif
+                            </section>
+                        @endif
 
-                    @if ($update == 'Wrong')
-                        <section class="hero is-danger has-text-left">
-                            <div class="hero-body">
-                                <div class="container">
-                                    <h1 class="title"><i class="far fa-exclamation-circle"></i> Wrong!</h1>
+                        @if ($update == 'Wrong')
+                            <section class="hero is-danger has-text-left">
+                                <div class="hero-body">
+                                    <div class="container">
+                                        <h1 class="title"><i class="far fa-exclamation-circle"></i> Wrong!</h1>
+                                    </div>
                                 </div>
-                            </div>
-                        </section>
-                    @endif
+                            </section>
+                        @endif
 
-                    <form action="/guess" method="post">
-                        {!! csrf_field() !!}
-                        <input id="time" name="time" type="hidden" value="" />
-                        <audio autoplay id="song">
-                            <source src="{!! $track->preview_url !!}" type="audio/mp3">
-                        </audio>
+                        <form action="/guess" method="post">
+                            {!! csrf_field() !!}
+                            <input id="time" name="time" type="hidden" value="" />
+                            <audio id="song">
+                                <source src="{!! $track->preview_url !!}" type="audio/mp3">
+                            </audio>
 
-                        <h3>Is this....</h3>
-                        @foreach ($answers as $answer)
-                            <button
-                                    class="button is-success"
-                                    name="answer"
-                                    type="submit"
-                                    value="{{ $answer->track->id }}"
-                            ><i class="far fa-music"></i>&nbsp;&nbsp;{{ str_limit($answer->track->name,30) }} - {{ str_limit(collect($answer->track->artists)->implode('name',', '),30) }}&nbsp;&nbsp;<i class="far fa-music"></i></button>
-                        @endforeach
-                    </form>
+                            <h3>Is this....</h3>
+                            @foreach ($answers as $answer)
+                                <button
+                                        class="button is-success"
+                                        name="answer"
+                                        type="submit"
+                                        value="{{ $answer->track->id }}"
+                                ><i class="far fa-music"></i>&nbsp;&nbsp;{{ str_limit($answer->track->name,30) }} - {{ str_limit(collect($answer->track->artists)->implode('name',', '),30) }}&nbsp;&nbsp;<i class="far fa-music"></i></button>
+                            @endforeach
+                        </form>
 
-                    <p>Created for <a href="https://larahack.com" target="_blank">Larahack 2018</a> by <a href="https://twitter.com/mikkyx">mikkyx</a></p>
+                        <p>Created for <a href="https://larahack.com" target="_blank">Larahack 2018</a> by <a href="https://twitter.com/mikkyx">mikkyx</a></p>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -91,13 +97,18 @@
     <script>
         // Update the form to show how far into the song we are
         setInterval(function() {
-            document.getElementById('time').value = document.getElementById('song').currentTime;
-        },100);
+            elapsedTime = document.getElementById('song').currentTime;
+
+            document.getElementById('playtime').value = elapsedTime;
+            document.getElementById('time').value = elapsedTime;
+        },10);
 
         // If the song ends without an answer being given, reload the page
+        /*
         document.getElementById('song').onended = function() {
             location.reload();
         };
+        */
     </script>
 </body>
 </html>
