@@ -43,7 +43,7 @@ class GameController extends Controller
         if (!Cache::has('playlist')) {
             Cache::put(
                 'playlist',
-                $this->spotifyApi->getUserPlaylist('spotifycharts','37i9dQZEVXbLnolsZ8PSNw'),
+                $this->spotifyApi->getUserPlaylistTracks('officialcharts','5GEf0fJs9xBPr5R4jEQjtw'),
                 60
             );
         }
@@ -59,7 +59,7 @@ class GameController extends Controller
     public function index()
     {
         // First we need to filter out any track which doesn't have a preview...
-        $tracks = collect($this->spotifyChart->tracks->items)->filter(function($track) {
+        $tracks = collect($this->spotifyChart->items)->filter(function($track) {
             return (!empty($track->track->preview_url));
         })->random(3);
 
