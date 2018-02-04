@@ -82,7 +82,7 @@
                                         name="answer"
                                         type="submit"
                                         value="{{ $answer->track->id }}"
-                                ><i class="far fa-music"></i>&nbsp;&nbsp;{{ str_limit($answer->track->name,30) }} - {{ str_limit(collect($answer->track->artists)->implode('name',', '),30) }}&nbsp;&nbsp;<i class="far fa-music"></i></button>
+                                ><i class="far fa-music"></i>&nbsp;&nbsp;{{ str_limit($answer->track->name,25) }} - {{ str_limit(collect($answer->track->artists)->implode('name',', '),25) }}&nbsp;&nbsp;<i class="far fa-music"></i></button>
                             @endforeach
                         </form>
 
