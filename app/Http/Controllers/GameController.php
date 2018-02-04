@@ -25,10 +25,12 @@ class GameController extends Controller
 
             // Attempt to get client_credentials token
             if ($this->spotifyClient->requestCredentialsToken()) {
+                $tokenExpiryMinutes = floor(($this->spotifyClient->getTokenExpiration() - time()) / 60);
+
                 Cache::put(
                     'accessToken',
                     $this->spotifyClient->getAccessToken(),
-                    $this->spotifyClient->getTokenExpiration() / 30 // Expiration is returned in seconds?
+                    $tokenExpiryMinutes
                 );
             }
         }
