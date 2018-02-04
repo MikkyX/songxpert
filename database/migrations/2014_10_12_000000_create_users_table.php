@@ -19,6 +19,9 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->rememberToken();
+            $table->unsignedInteger('songs_seen')->default(0);
+            $table->unsignedInteger('songs_correct')->default(0)->index();
+            $table->unsignedInteger('score')->default(0)->index();
             $table->timestamps();
         });
     }

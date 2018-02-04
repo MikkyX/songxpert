@@ -12,7 +12,7 @@
     <script src="/js/fa-regular.min.js"></script>
     <style>
         html, body {
-            background: #7da8c3;
+            background: #f5f8fa;
             height: 100%;
         }
 
@@ -97,16 +97,25 @@
                             @endforeach
                         </form>
 
-                        <div class="columns">
-                            <div class="column">
-                                Right:<br />
-                                <span class="is-size-1">{{ session('correct') }}</span> / {{ session('heard') }}</small>
+                        @if (Auth::check())
+                            <div class="columns">
+                                <div class="column">
+                                    Right:<br />
+                                    <span class="is-size-1">{{ Auth::user()->songs_correct }}</span> / {{ Auth::user()->songs_seen }}</small>
+                                </div>
+                                <div class="column">
+                                    Score:<br />
+                                    <span class="is-size-1">{{ Auth::user()->score }}</span>
+                                </div>
                             </div>
-                            <div class="column">
-                                Score:<br />
-                                <span class="is-size-1">{{ session('score') }}</span>
+                        @else
+                            <div class="columns">
+                                <div class="column">
+                                    <p>Want to store your stats and appear on the leaderboard?</p>
+                                    <p><a class="button is-info" href="/register">Register</a> or <a class="button is-primary" href="/login">Log In</a></p>
+                                </div>
                             </div>
-                        </div>
+                        @endif
 
                         <p>Created for <a href="https://larahack.com" target="_blank">Larahack 2018</a> by <a href="https://twitter.com/mikkyx">mikkyx</a></p>
                     </div>

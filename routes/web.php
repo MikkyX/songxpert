@@ -14,3 +14,7 @@
 Route::get('/','GameController@index');
 Route::post('/guess','GameController@guess');
 Route::get('/timeout','GameController@timeout');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use Cache;
 use Illuminate\Http\Request;
 use Session;
@@ -94,28 +95,30 @@ class GameController extends Controller
      */
     public function guess(Request $request)
     {
-        // Load the old session
-        $correct = session('correct') ?: 0;
-        $score = session('score') ?: 0;
-
         // Check to see if they got this one right
         if ($request->answer == session('answer')) {
             // If they did, they score up to 5 points, depending on answer speed
-            $correct++;
             $last_score = ceil((30 - $request->time) / 6);
-            $score += $last_score;
+
+            // Update the database
+            if (Auth::check()) {
+                Auth::user()->update([
+                    'songs_seen' => \DB::raw('songs_seen + 1'),
+                    'songs_correct' => \DB::raw('songs_correct + 1'),
+                    'score' => \DB::raw('score + '.$last_score),
+                ]);
+            }
+
             $update = 'Right';
         } else {
             $last_score = 0;
+
+            if (Auth::check()) {
+                Auth::user()->increment('songs_seen');
+            }
+
             $update = 'Wrong';
         }
-
-        // Store the updated stats in a session
-        session([
-            'correct' => $correct,
-            'heard' => session('heard') ? session('heard') + 1 : 1,
-            'score' => $score,
-        ]);
 
         return redirect('/')->with([
             'last_score' => $last_score,
@@ -129,9 +132,9 @@ class GameController extends Controller
     public function timeout()
     {
         // Update the songs heard counter
-        session([
-            'heard' => session('heard') ? session('heard') + 1 : 1,
-        ]);
+        if (Auth::check()) {
+            Auth::user()->increment('songs_seen');
+        }
 
         // Redirect back
         return redirect('/')->with([
