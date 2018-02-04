@@ -75,6 +75,7 @@ class GameController extends Controller
         // Show the form
         return view('form',[
             'answers' => $answers,
+            'score' => session('score') ?: '',
             'track' => $correct_track->track,
             'update' => session('update') ?: '',
         ]);
@@ -87,11 +88,17 @@ class GameController extends Controller
     {
         // Check to see if they got this one right
         if ($request->answer == session('answer')) {
+            // If they did, they score up to 5 points, depending on answer speed
             $update = 'Right';
+            $score = ceil((30 - $request->time) / 6);
         } else {
             $update = 'Wrong';
+            $score = 0;
         }
 
-        return redirect('/')->with('update',$update);
+        return redirect('/')->with([
+            'score' => $score,
+            'update' => $update,
+        ]);
     }
 }
