@@ -49,6 +49,11 @@ class GameController extends Controller
         $this->spotifyChart = Cache::get('playlist');
     }
 
+    /**
+     * Show the form with the playing song and the three guess inputs
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         // First we need to filter out any track which doesn't have a preview...
@@ -69,6 +74,22 @@ class GameController extends Controller
         return view('form',[
             'answers' => $answers,
             'track' => $correct_track->track,
+            'update' => session('update') ?: '',
         ]);
+    }
+
+    /**
+     * Handle a guess
+     */
+    public function guess(Request $request)
+    {
+        // Check to see if they got this one right
+        if ($request->answer == session('answer')) {
+            $update = 'Right';
+        } else {
+            $update = 'Wrong';
+        }
+
+        return redirect('/')->with('update',$update);
     }
 }

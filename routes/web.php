@@ -12,3 +12,4 @@
 */
 
 Route::get('/','GameController@index');
+Route::post('/guess','GameController@guess');
