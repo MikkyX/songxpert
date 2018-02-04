@@ -68,6 +68,17 @@
                             </section>
                         @endif
 
+                        @if ($update == 'Timeout')
+                            <section class="hero is-light has-text-left">
+                                <div class="hero-body">
+                                    <div class="container">
+                                        <h1 class="title"><i class="far fa-clock"></i> Timed Out!</h1>
+                                        <h2 class="subtitle">Don't forget to guess the next one...</h2>
+                                    </div>
+                                </div>
+                            </section>
+                        @endif
+
                         <form action="/guess" method="post">
                             {!! csrf_field() !!}
                             <input id="time" name="time" type="hidden" value="" />
@@ -116,7 +127,7 @@
 
         // If the song ends without an answer being given, reload the page
         document.getElementById('song').onended = function() {
-            location.reload();
+            location.href = '/timeout';
         };
     </script>
 </body>

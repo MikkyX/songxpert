@@ -13,3 +13,4 @@
 
 Route::get('/','GameController@index');
 Route::post('/guess','GameController@guess');
+Route::get('/timeout','GameController@timeout');

@@ -41,10 +41,15 @@ class GameController extends Controller
 
         // Get the current UK Top 50
         if (!Cache::has('playlist')) {
+            // Grab a random 100 tracks from the "every UK number one ever" playlist
+            $offset = rand(0,900);
+
             Cache::put(
                 'playlist',
-                $this->spotifyApi->getUserPlaylistTracks('officialcharts','5GEf0fJs9xBPr5R4jEQjtw'),
-                60
+                $this->spotifyApi->getUserPlaylistTracks('officialcharts','5GEf0fJs9xBPr5R4jEQjtw',[
+                    'offset' => $offset,
+                ]),
+                2
             );
         }
 
@@ -61,7 +66,7 @@ class GameController extends Controller
         // First we need to filter out any track which doesn't have a preview...
         $tracks = collect($this->spotifyChart->items)->filter(function($track) {
             return (!empty($track->track->preview_url));
-        })->random(3);
+        })->shuffle()->take(3);
 
         // The first track is the correct answer
         $correct_track = $tracks->first();
@@ -115,6 +120,22 @@ class GameController extends Controller
         return redirect('/')->with([
             'last_score' => $last_score,
             'update' => $update,
+        ]);
+    }
+
+    /**
+     * Handle a timeout
+     */
+    public function timeout()
+    {
+        // Update the songs heard counter
+        session([
+            'heard' => session('heard') ? session('heard') + 1 : 1,
+        ]);
+
+        // Redirect back
+        return redirect('/')->with([
+            'update' => 'Timeout',
         ]);
     }
 }
