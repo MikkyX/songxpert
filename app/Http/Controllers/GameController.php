@@ -67,8 +67,8 @@ class GameController extends Controller
 
         // Show the form
         return view('form',[
+            'answers' => $answers,
             'track' => $correct_track->track,
-            'answer' => $answers,
         ]);
     }
 }
