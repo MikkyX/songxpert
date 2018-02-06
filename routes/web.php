@@ -16,4 +16,7 @@ Route::post('/guess','GameController@guess');
 Route::get('/timeout','GameController@timeout');
 Route::get('/leaderboard','LeaderboardController@index');
 
+Route::get('auth/{provider}', 'Auth\LoginController@redirectToProvider');
+Route::get('auth/{provider}/callback', 'Auth\LoginController@handleProviderCallback');
+
 Auth::routes();

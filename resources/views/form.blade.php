@@ -56,6 +56,19 @@
                             <p><a class="button is-info" href="/register">Register</a> or <a class="button is-primary" href="/login">Log In</a></p>
                         </div>
                     </div>
+
+                    <div class="columns">
+                        <div class="column">
+                            <p>Alternatively...</p>
+                        </div>
+                    </div>
+
+                    <div class="columns">
+                        <div class="column">
+                            <p>Log in with Social media</p>
+                            <p><a class="button is-primary" href="/auth/facebook"><i class="fab fa-facebook"></i></a></p>
+                        </div>
+                    </div>
                 @endif
             </div>
             <div class="column">

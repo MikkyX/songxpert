@@ -54,6 +54,7 @@
                                     @else
                                         <span class="navbar-item"><a class="button is-info" href="/register">Register</a></span>
                                         <span class="navbar-item"><a class="button is-primary" href="/login">Log In</a></span>
+                                        <span class="navbar-item"><a class="button is-primary" href="/auth/facebook"><i class="fab fa-facebook"></i></a></span>
                                     @endif
                                 </div>
                             </div>
