@@ -98,7 +98,7 @@
             document.getElementById('time').value = elapsedTime;
 
             // Update the score banner
-            scoreNow = Math.ceil((30 - elapsedTime) / 6);
+            scoreNow = Math.ceil((30 - elapsedTime) / 3);
             document.getElementById('score').innerText = scoreNow;
         },10);
 

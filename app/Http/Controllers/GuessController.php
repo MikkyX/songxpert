@@ -18,8 +18,8 @@ class GuessController extends Controller
     {
         // Check to see if they got this one right
         if ($request->answer == session('answer')) {
-            // If they did, they score up to 5 points, depending on answer speed
-            $last_score = ceil((30 - $request->time) / 6);
+            // If they did, they score up to 10 points, depending on answer speed
+            $last_score = ceil((30 - $request->time) / 3);
 
             // Update the database
             if (Auth::check()) {
