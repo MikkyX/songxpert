@@ -24,7 +24,6 @@ class GuessController extends Controller
             // Update the database
             if (Auth::check()) {
                 Auth::user()->update([
-                    'songs_seen' => \DB::raw('songs_seen + 1'),
                     'songs_correct' => \DB::raw('songs_correct + 1'),
                     'score' => \DB::raw('score + '.$last_score),
                 ]);
@@ -33,10 +32,7 @@ class GuessController extends Controller
             $update = 'Right';
         } else {
             if (Auth::check()) {
-                Auth::user()->update([
-                    'songs_seen' => \DB::raw('songs_seen + 1'),
-                    'score' => \DB::raw('score - '.$last_score),
-                ]);
+                Auth::user()->decrement('score',$last_score);
             }
 
             $update = 'Wrong';

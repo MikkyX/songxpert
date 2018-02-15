@@ -7,6 +7,7 @@ use Cache;
 use Illuminate\Http\Request;
 use Session;
 use SpotifyWebAPI;
+use View;
 
 class GameController extends Controller
 {
@@ -99,12 +100,19 @@ class GameController extends Controller
         session(['answer' => $correct_answer]);
 
         // Show the form
-        return view('form',[
+        $form = View::make('form',[
             'answers' => $answers,
             'last_score' => session('last_score') ?: '',
             'track' => $correct_track->track,
             'update' => session('update') ?: '',
         ]);
+
+        // Update the songs heard counter
+        if (Auth::check()) {
+            Auth::user()->increment('songs_seen');
+        }
+
+        return response($form);
     }
 
     /**
@@ -112,11 +120,6 @@ class GameController extends Controller
      */
     public function timeout()
     {
-        // Update the songs heard counter
-        if (Auth::check()) {
-            Auth::user()->increment('songs_seen');
-        }
-
         // Redirect back
         return redirect()->route('game')->with([
             'update' => 'Timeout',
