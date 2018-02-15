@@ -13,7 +13,7 @@
         <div class="message is-danger has-text-centered">
             <div class="message-body">
                 <i class="far fa-exclamation-circle"></i> <strong>Wrong!</strong>
-                - Can't win 'em all... ¯\_(ツ)_/¯
+                - You lost <strong>{{ $last_score }}</strong> points!
             </div>
         </div>
     @endif
@@ -98,7 +98,7 @@
             document.getElementById('time').value = elapsedTime;
 
             // Update the score banner
-            scoreNow = Math.ceil((30 - elapsedTime) / 6);
+            scoreNow = Math.ceil((30 - elapsedTime) / 3);
             document.getElementById('score').innerText = scoreNow;
         },10);
 
