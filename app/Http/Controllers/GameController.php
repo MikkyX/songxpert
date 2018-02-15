@@ -68,12 +68,11 @@ class GameController extends Controller
         $recents = (session('recents') ?: collect());
 
         // Run some filters over the track list
-        $tracks = collect($this->spotifyChart->items)->reject(function($track) {
+        $tracks = collect($this->spotifyChart->items)->reject(function($track) use ($recents) {
             // Reject the track if it doesn't have a preview URL
-            return empty($track->track->preview_url);
-        })->reject(function ($track) use ($recents) {
-            // Reject the track if it appears in the recents list
-            return $recents->contains($track->track->id);
+            // or it appears in the recents list
+            return empty($track->track->preview_url)
+                || $recents->contains($track->track->id);
         })->shuffle()->take(3);
 
         // The first track is the correct answer
