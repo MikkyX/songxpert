@@ -41,7 +41,7 @@
                     <div class="box">
                         <nav class="navbar">
                             <div class="navbar-brand">
-                                <a class="navbar-item is-size-3" href="/"><i class="fab fa-spotify"></i>&nbsp;&nbsp;Name That Tune!</a>
+                                <a class="navbar-item is-size-3" href="/play">SongXpert</a>
                             </div>
                             <div class="navbar-menu">
                                 <div class="navbar-end">
