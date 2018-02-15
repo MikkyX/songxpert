@@ -141,7 +141,7 @@ class GameController extends Controller
             $update = 'Wrong';
         }
 
-        return redirect('/')->with([
+        return redirect()->route('game')->with([
             'last_score' => $last_score,
             'update' => $update,
         ]);
@@ -158,7 +158,7 @@ class GameController extends Controller
         }
 
         // Redirect back
-        return redirect('/')->with([
+        return redirect()->route('game')->with([
             'update' => 'Timeout',
         ]);
     }

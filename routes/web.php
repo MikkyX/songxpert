@@ -12,7 +12,7 @@
 */
 
 Route::get('/','HomeController@index');
-Route::get('/play','GameController@index');
+Route::get('/play','GameController@index')->name('game');
 Route::post('/guess','GameController@guess');
 Route::get('/timeout','GameController@timeout');
 Route::get('/leaderboard','LeaderboardController@index');
