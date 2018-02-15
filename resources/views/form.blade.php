@@ -13,7 +13,7 @@
         <div class="message is-danger has-text-centered">
             <div class="message-body">
                 <i class="far fa-exclamation-circle"></i> <strong>Wrong!</strong>
-                - Can't win 'em all... ¯\_(ツ)_/¯
+                - You lost <strong>{{ $last_score }}</strong> points!
             </div>
         </div>
     @endif

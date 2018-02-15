@@ -16,11 +16,11 @@ class GuessController extends Controller
      */
     public function store(Request $request)
     {
+        // Work out the number of points to add or subtract on this round
+        $last_score = ceil((30 - $request->time) / 3);
+
         // Check to see if they got this one right
         if ($request->answer == session('answer')) {
-            // If they did, they score up to 10 points, depending on answer speed
-            $last_score = ceil((30 - $request->time) / 3);
-
             // Update the database
             if (Auth::check()) {
                 Auth::user()->update([
@@ -32,10 +32,11 @@ class GuessController extends Controller
 
             $update = 'Right';
         } else {
-            $last_score = 0;
-
             if (Auth::check()) {
-                Auth::user()->increment('songs_seen');
+                Auth::user()->update([
+                    'songs_seen' => \DB::raw('songs_seen + 1'),
+                    'score' => \DB::raw('score - '.$last_score),
+                ]);
             }
 
             $update = 'Wrong';
