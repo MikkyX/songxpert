@@ -7,6 +7,7 @@ use Cache;
 use Illuminate\Http\Request;
 use Session;
 use SpotifyWebAPI;
+use View;
 
 class GameController extends Controller
 {
@@ -68,12 +69,11 @@ class GameController extends Controller
         $recents = (session('recents') ?: collect());
 
         // Run some filters over the track list
-        $tracks = collect($this->spotifyChart->items)->reject(function($track) {
+        $tracks = collect($this->spotifyChart->items)->reject(function($track) use ($recents) {
             // Reject the track if it doesn't have a preview URL
-            return empty($track->track->preview_url);
-        })->reject(function ($track) use ($recents) {
-            // Reject the track if it appears in the recents list
-            return $recents->contains($track->track->id);
+            // or it appears in the recents list
+            return $this->_trackHasNoPreview($track->track)
+                || $this->_trackIsRecent($track->track->id);
         })->shuffle()->take(3);
 
         // The first track is the correct answer
@@ -100,51 +100,19 @@ class GameController extends Controller
         session(['answer' => $correct_answer]);
 
         // Show the form
-        return view('form',[
+        $form = View::make('form',[
             'answers' => $answers,
             'last_score' => session('last_score') ?: '',
             'track' => $correct_track->track,
             'update' => session('update') ?: '',
         ]);
-    }
 
-    /**
-     * Handle a guess
-     *
-     * @param $request
-     * @return redirect
-     */
-    public function guess(Request $request)
-    {
-        // Check to see if they got this one right
-        if ($request->answer == session('answer')) {
-            // If they did, they score up to 5 points, depending on answer speed
-            $last_score = ceil((30 - $request->time) / 6);
-
-            // Update the database
-            if (Auth::check()) {
-                Auth::user()->update([
-                    'songs_seen' => \DB::raw('songs_seen + 1'),
-                    'songs_correct' => \DB::raw('songs_correct + 1'),
-                    'score' => \DB::raw('score + '.$last_score),
-                ]);
-            }
-
-            $update = 'Right';
-        } else {
-            $last_score = 0;
-
-            if (Auth::check()) {
-                Auth::user()->increment('songs_seen');
-            }
-
-            $update = 'Wrong';
+        // Update the songs heard counter
+        if (Auth::check()) {
+            Auth::user()->increment('songs_seen');
         }
 
-        return redirect('/')->with([
-            'last_score' => $last_score,
-            'update' => $update,
-        ]);
+        return response($form);
     }
 
     /**
@@ -152,14 +120,32 @@ class GameController extends Controller
      */
     public function timeout()
     {
-        // Update the songs heard counter
-        if (Auth::check()) {
-            Auth::user()->increment('songs_seen');
-        }
-
         // Redirect back
-        return redirect('/')->with([
+        return redirect()->route('game')->with([
             'update' => 'Timeout',
         ]);
+    }
+
+    /**
+     * Test to see if a track has a valid preview URL
+     *
+     * @param $track
+     * @return bool
+     */
+    private function _trackHasNoPreview($track)
+    {
+        return empty($track->preview_url);
+    }
+
+    /**
+     * Test to see if a track has been recently used as a correct answer
+     *
+     * @param $track_id
+     * @return bool
+     */
+    private function _trackIsRecent($track_id)
+    {
+        $recents = (session('recents') ?: collect());
+        return $recents->contains($track_id);
     }
 }
