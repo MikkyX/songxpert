@@ -71,8 +71,8 @@ class GameController extends Controller
         $tracks = collect($this->spotifyChart->items)->reject(function($track) use ($recents) {
             // Reject the track if it doesn't have a preview URL
             // or it appears in the recents list
-            return empty($track->track->preview_url)
-                || $recents->contains($track->track->id);
+            return $this->_trackHasNoPreview($track->track)
+                || $this->_trackIsRecent($track->track->id);
         })->shuffle()->take(3);
 
         // The first track is the correct answer
@@ -160,5 +160,28 @@ class GameController extends Controller
         return redirect()->route('game')->with([
             'update' => 'Timeout',
         ]);
+    }
+
+    /**
+     * Test to see if a track has a valid preview URL
+     *
+     * @param $track
+     * @return bool
+     */
+    private function _trackHasNoPreview($track)
+    {
+        return empty($track->preview_url);
+    }
+
+    /**
+     * Test to see if a track has been recently used as a correct answer
+     *
+     * @param $track_id
+     * @return bool
+     */
+    private function _trackIsRecent($track_id)
+    {
+        $recents = (session('recents') ?: collect());
+        return $recents->contains($track_id);
     }
 }
