@@ -11,7 +11,8 @@
 |
 */
 
-Route::get('/','GameController@index');
+Route::get('/','HomeController@index');
+Route::get('/play','GameController@index');
 Route::post('/guess','GameController@guess');
 Route::get('/timeout','GameController@timeout');
 Route::get('/leaderboard','LeaderboardController@index');
