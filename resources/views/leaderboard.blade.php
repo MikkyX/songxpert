@@ -4,6 +4,8 @@
         <div class="column">
             <h1 class="title">Leaderboard</h1>
 
+            <p>Leaderboard was wiped on 17th February due to a change in the scoring system - sorry!</p>
+
             <table class="table">
                 <thead>
                 <tr>
